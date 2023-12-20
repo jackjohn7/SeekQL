@@ -4,7 +4,7 @@ SeekQL is a free and open-source SQL practice suite.
 
 A user gains access to a number of practice problems. They are given
 a prompt and must write a SQL query to satisfy the prompt's
-requirements. They are also given a visual representation of the 
+requirements. They are also given a visual representation of the
 schema.
 
 # How it works
@@ -19,16 +19,41 @@ tables and inserting rows.
 
 # Technologies
 
-- Rust
-- Askama
-- HTMX
-- SQLx
+- [Rust](https://www.rust-lang.org/)
+- [Askama](https://github.com/djc/askama)
+- [HTMX](https://htmx.org/)
+- [SQLx](https://github.com/launchbadge/sqlx)
+- [TailwindCSS](https://tailwindcss.com/)
+
+# Setup
+
+- Cargo
+- NPM
+
+Clone the repository:
+
+``` bash
+git clone https://github.com/jackjohn7/SeekQL
+cd SeekQL
+```
+
+Install node dependencies (tailwind and prettier):
+
+``` bash
+npm install
+```
+
+Run the application:
+
+``` bash
+cargo run
+```
 
 # Test Notation
 
 The pseudo data model for tests can be seen below:
 
-``` json
+```json
 "problems": [
     {
         "name": "name of problem",

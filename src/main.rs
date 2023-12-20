@@ -6,6 +6,7 @@ use axum::{
     Router,
 };
 
+use tower_http::services::ServeDir;
 use tracing::{info, debug};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -23,7 +24,14 @@ async fn main() -> anyhow::Result<()> {
     info!("Initializing router...");
 
     let app = Router::new()
-        .route("/", get(hello));
+        .route("/", get(hello))
+        .nest_service(
+            "/public/styles",
+            ServeDir::new(format!(
+                "{}/public/styles",
+                std::env::current_dir().unwrap()
+                    .to_str()
+                    .unwrap())));
     let port = 5173_u16;
     let addr = std::net::SocketAddr::from(([0 ,0 ,0 , 0], port));
 
