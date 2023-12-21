@@ -1,4 +1,7 @@
-![SeekQL Concept Art](/assets/seek_ql_concept.png)
+<p align='center' width='100%'>
+    <img src='/assets/seek_ql_concept.png' width="30%">
+</p>
+
 
 # SeekQL
 
