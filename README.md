@@ -27,15 +27,43 @@ tables and inserting rows.
 
 # Setup
 
-- Cargo
-- NPM
-
 Clone the repository:
 
 ``` bash
 git clone https://github.com/jackjohn7/SeekQL
 cd SeekQL
 ```
+
+## With Docker
+
+Requirements:
+
+- [Docker](https://www.docker.com/)
+
+Build the docker container
+
+``` bash
+docker build -t seek_ql .
+```
+
+Run the docker container
+
+``` bash
+docker run --publish 5173:5173 seek_ql
+```
+
+OR Optionally use the detach flag to free your terminal
+
+``` bash
+docker run --publish 5173:5173 -d seek_ql
+```
+
+## Without Docker
+
+Requirements:
+
+- [Cargo](https://rustup.rs/)
+- [NPM](https://www.npmjs.com/)
 
 Install node dependencies (tailwind and prettier):
 
