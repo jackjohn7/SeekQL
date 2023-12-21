@@ -1,9 +1,8 @@
-use std::path::PathBuf;
+use std::{path::PathBuf, sync::Arc};
 
 use askama::Template;
 use axum::{
-    http::StatusCode,
-    response::{Html, IntoResponse, Response},
+    response::IntoResponse,
     routing::get,
     Router,
 };
@@ -11,6 +10,16 @@ use axum::{
 use tower_http::services::{ServeDir, ServeFile};
 use tracing::{info, debug};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+mod controllers;
+mod html_template;
+
+use crate::html_template::HtmlTemplate;
+
+#[derive(Clone)]
+pub struct AppState{
+    pub dummy: u64
+}
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -23,12 +32,14 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    info!("Initializing application state");
+
+    let app_state = AppState{ dummy: 32 };
+
     info!("Initializing router...");
 
     let app = Router::new()
         .route("/", get(index))
-        .route("/login", get(login))
-        .route("/register", get(register))
         .nest_service(
             "/public/styles",
             ServeDir::new(format!(
@@ -40,6 +51,12 @@ async fn main() -> anyhow::Result<()> {
             "/favicon.ico",
             ServeFile::new(std::env::current_dir().unwrap().as_path().join(PathBuf::from("public/favicon.ico")).to_str().unwrap())
         );
+
+    // register controllers (there's probably a better way to do this)
+    let app = controllers::auth_controller::register_routes(app);
+
+    let app = app.with_state(app_state);
+
     let port = 5173_u16;
     let addr = std::net::SocketAddr::from(([0 ,0 ,0 , 0], port));
 
@@ -63,40 +80,3 @@ struct IndexTemplate<'a> {
     name: &'a str
 }
 
-async fn login() -> impl IntoResponse {
-    let template = LoginTemplate{};
-    debug!("Rendering page login");
-    HtmlTemplate(template)
-}
-
-#[derive(Template)]
-#[template(path = "login.html")]
-struct LoginTemplate;
-
-async fn register() -> impl IntoResponse {
-    let template = RegisterTemplate{};
-    debug!("Rendering page register");
-    HtmlTemplate(template)
-}
-
-#[derive(Template)]
-#[template(path = "signup.html")]
-struct RegisterTemplate;
-
-struct HtmlTemplate<T>(T);
-
-impl<T> IntoResponse for HtmlTemplate<T>
-where
-    T: Template,
-{
-    fn into_response(self) -> Response {
-        match self.0.render() {
-            Ok(html) => Html(html).into_response(),
-            Err(err) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Failed to render template. Error: {}", err),
-            )
-                .into_response(),
-        }
-    }
-}
