@@ -26,7 +26,9 @@ async fn main() -> anyhow::Result<()> {
     info!("Initializing router...");
 
     let app = Router::new()
-        .route("/", get(hello))
+        .route("/", get(index))
+        .route("/login", get(login))
+        .route("/register", get(register))
         .nest_service(
             "/public/styles",
             ServeDir::new(format!(
@@ -44,23 +46,42 @@ async fn main() -> anyhow::Result<()> {
     info!("Router initialized, now listening on port {}", port);
 
     let listener = tokio::net::TcpListener::bind(addr).await.expect("Failed to listen");
-
     axum::serve(listener, app).await.expect("Failed to serve router");
 
     Ok(())
 }
 
-async fn hello() -> impl IntoResponse {
-    let template = HelloTemplate{name: "bruv"};
+async fn index() -> impl IntoResponse {
+    let template = IndexTemplate{name: "bruv"};
     debug!("Rendering page root");
     HtmlTemplate(template)
 }
 
 #[derive(Template)]
 #[template(path = "index.html")]
-struct HelloTemplate<'a> {
+struct IndexTemplate<'a> {
     name: &'a str
 }
+
+async fn login() -> impl IntoResponse {
+    let template = LoginTemplate{};
+    debug!("Rendering page login");
+    HtmlTemplate(template)
+}
+
+#[derive(Template)]
+#[template(path = "login.html")]
+struct LoginTemplate;
+
+async fn register() -> impl IntoResponse {
+    let template = RegisterTemplate{};
+    debug!("Rendering page register");
+    HtmlTemplate(template)
+}
+
+#[derive(Template)]
+#[template(path = "signup.html")]
+struct RegisterTemplate;
 
 struct HtmlTemplate<T>(T);
 

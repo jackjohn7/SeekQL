@@ -5,6 +5,7 @@
     "format": "prettier --write --ignore-unknown ."
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.9",
     "tailwindcss": "^3.4.0"
