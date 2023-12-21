@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use askama::Template;
 use axum::{
     http::StatusCode,
@@ -6,7 +8,7 @@ use axum::{
     Router,
 };
 
-use tower_http::services::ServeDir;
+use tower_http::services::{ServeDir, ServeFile};
 use tracing::{info, debug};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -31,7 +33,11 @@ async fn main() -> anyhow::Result<()> {
                 "{}/public/styles",
                 std::env::current_dir().unwrap()
                     .to_str()
-                    .unwrap())));
+                    .unwrap())))
+        .nest_service(
+            "/favicon.ico",
+            ServeFile::new(std::env::current_dir().unwrap().as_path().join(PathBuf::from("public/favicon.ico")).to_str().unwrap())
+        );
     let port = 5173_u16;
     let addr = std::net::SocketAddr::from(([0 ,0 ,0 , 0], port));
 
