@@ -1,9 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./public/views/*.html"],
+  content: ["./public/views/**/*.html"],
   theme: {
     extend: {
       colors: {
+        "layer-one-light": "#e6e6f4",
         "layer-one-dark": "#090a0b",
       },
     },

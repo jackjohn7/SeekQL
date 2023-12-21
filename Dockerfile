@@ -10,8 +10,6 @@ WORKDIR /usr/src/seek_ql
 
 COPY . .
 
-RUN pwd && ls
-
 # install npm dependencies
 RUN npm install
 

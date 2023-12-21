@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use askama::Template;
 use axum::{
     routing::get,
