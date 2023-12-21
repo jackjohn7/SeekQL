@@ -1,3 +1,5 @@
+![SeekQL Concept Art](/assets/seek_ql_concept.png)
+
 # SeekQL
 
 SeekQL is a free and open-source SQL practice suite.
