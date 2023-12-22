@@ -1,6 +1,7 @@
-use std::{path::PathBuf};
+use std::{path::PathBuf, sync::Arc};
 
 use askama::Template;
+use axum::routing::post;
 use axum::{
     response::IntoResponse,
     routing::get,
@@ -16,10 +17,11 @@ mod html_template;
 
 use crate::html_template::HtmlTemplate;
 
-#[derive(Clone)]
 pub struct AppState{
     pub dummy: u64
 }
+
+use crate::controllers::auth_controller::{login, register, register_email};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -34,12 +36,17 @@ async fn main() -> anyhow::Result<()> {
 
     info!("Initializing application state");
 
-    let app_state = AppState{ dummy: 32 };
+    let app_state = Arc::new(AppState{ dummy: 32 });
 
     info!("Initializing router...");
 
     let app = Router::new()
         .route("/", get(index))
+        // Auth routes
+        .route("/login", get(login))
+        .route("/register", get(register))
+        .route("/register/email", post(register_email))
+        .with_state(app_state)
         .nest_service(
             "/public/styles",
             ServeDir::new(format!(
@@ -52,10 +59,6 @@ async fn main() -> anyhow::Result<()> {
             ServeFile::new(std::env::current_dir().unwrap().as_path().join(PathBuf::from("public/favicon.ico")).to_str().unwrap())
         );
 
-    // register controllers (there's probably a better way to do this)
-    let app = controllers::auth_controller::register_routes(app);
-
-    let app = app.with_state(app_state);
 
     let port = 5173_u16;
     let addr = std::net::SocketAddr::from(([0 ,0 ,0 , 0], port));

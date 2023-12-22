@@ -7,21 +7,26 @@
   <p class="dark:text-white">You're one step closer to free SQL practice!</p>
   <form
     class="flex flex-col space-y-2 bg-layer-one-light dark:bg-layer-one-dark m-4 p-4 rounded-xl"
-    action="post"
+    action="/register"
+    method="post"
   >
     <label for="email" class="dark:text-white">Enter your email</label>
     <input
       name="email"
       placeholder="email"
       type="email"
-      class="dark:bg-black rounded-lg"
+      class="dark:bg-black rounded-lg dark:text-white"
+      hx-post="/register/email"
+      hx-target="#email-validation"
+      hx-swap="innerHTML"
     />
+    <div id="email-validation"></div>
     <label for="password" class="dark:text-white">Create a password</label>
     <input
       name="password"
       placeholder="password"
       type="password"
-      class="dark:bg-black rounded-lg"
+      class="dark:bg-black rounded-lg dark:text-white"
     />
     <label for="password_confirmation" class="dark:text-white"
       >Confirm your password</label
@@ -30,7 +35,7 @@
       name="password_confirmation"
       placeholder="confirm password"
       type="password"
-      class="dark:bg-black rounded-lg"
+      class="dark:bg-black rounded-lg dark:text-white"
     />
     <button class="bg-blue-400 rounded-lg py-2 mt-1 text-white">Submit</button>
   </form>

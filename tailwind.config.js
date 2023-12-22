@@ -6,6 +6,8 @@ module.exports = {
       colors: {
         "layer-one-light": "#e6e6f4",
         "layer-one-dark": "#090a0b",
+        error: "#bf4d4d",
+        success: "#72d564",
       },
     },
   },

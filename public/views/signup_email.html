@@ -1,0 +1,6 @@
+{% match error_msg %} {% when Some with (msg) %}
+<p class="text-error">{{ msg }}</p>
+{% when None %}
+<!-- Replace with checkmark or something later -->
+<p class="text-success">Valid email</p>
+{% endmatch %}
