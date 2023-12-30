@@ -16,10 +16,9 @@ use crate::{html_template::HtmlTemplate, AppState};
 #[template(path = "login.html")]
 struct LoginTemplate;
 
-pub async fn login(State(state): State<Arc<AppState>>) -> impl IntoResponse {
-    let dummy = state.dummy;
+pub async fn login(State(_): State<Arc<AppState>>) -> impl IntoResponse {
     let template = LoginTemplate{};
-    debug!("Rendering page login, {}", dummy);
+    debug!("Rendering page login");
     HtmlTemplate(template)
 }
 
@@ -27,8 +26,8 @@ pub async fn login(State(state): State<Arc<AppState>>) -> impl IntoResponse {
 #[template(path = "signup.html")]
 struct RegisterTemplate;
 
-pub async fn register(State(state): State<Arc<AppState>>) -> impl IntoResponse {
-    debug!("dummy data from state: {}", state.dummy);
+pub async fn register(State(_): State<Arc<AppState>>) -> impl IntoResponse {
+    debug!("dummy data from state");
     let template = RegisterTemplate{};
     debug!("Rendering page register");
     HtmlTemplate(template)

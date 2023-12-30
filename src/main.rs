@@ -1,4 +1,6 @@
 use std::{path::PathBuf, sync::Arc};
+use sqlx::{Pool, Postgres};
+use sqlx::postgres::PgPoolOptions;
 
 use askama::Template;
 use axum::routing::post;
@@ -14,11 +16,12 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 mod controllers;
 mod html_template;
+mod problems;
 
 use crate::html_template::HtmlTemplate;
 
 pub struct AppState{
-    pub dummy: u64
+    pub db: Arc<Pool<Postgres>>
 }
 
 use crate::controllers::auth_controller::{login, register, register_email};
@@ -34,9 +37,19 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    info!("Connecting to main database");
+    let pool = PgPoolOptions::new()
+        //.max_connections(5)
+        .connect("postgres://seekql:password@localhost:5432").await?;
+
+    info!("Running migrations");
+    sqlx::migrate!("db/migrations")
+        .run(&pool)
+        .await?;
+
     info!("Initializing application state");
 
-    let app_state = Arc::new(AppState{ dummy: 32 });
+    let app_state = Arc::new(AppState{ db: Arc::new(pool) });
 
     info!("Initializing router...");
 
